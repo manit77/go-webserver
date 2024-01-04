@@ -1,0 +1,52 @@
+<h1>
+    Login Form
+</h1>
+
+<form id="loginForm" method="post">
+    user name: <input type="text" id="username" name="username" value="a"><br>
+    password: <input type="text" id="password" name="password" value="b"><br>
+    <input type="submit" value="login" onclick="submitForm(event)">
+    <div id="resultMsg"></div>
+</form>
+
+<script>
+
+    async function submitForm(event) {
+        event.preventDefault();
+
+        const form = document.getElementById('loginForm');
+        const resultMsg = document.getElementById('resultMsg');
+        const formData = new FormData(form);
+
+        const obj = {};
+        formData.forEach((value, key) => {
+            obj[key] = value;
+        });
+
+        const json = JSON.stringify(obj);
+
+        try {
+            let returnObj = await postJSON("/login", json);
+            console.log(returnObj);
+            resultMsg.innerHTML = JSON.stringify(returnObj);
+        } catch (err) {
+            resultMsg.innerHTML = err;
+        }
+
+    }
+
+    async function postJSON(url, json) {
+
+        console.log(url, json)
+        let response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: json
+        });
+        console.log(response);
+        return response.json();
+    }
+
+</script>
